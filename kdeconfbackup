@@ -18,6 +18,10 @@ $(usage)
 
 Defaults shown in [].
 -h, --help           this help
+
+Modes:
+backup               backs up KDE conf of current user
+restore              restores KDE conf of current user
 EOF
 }
 
