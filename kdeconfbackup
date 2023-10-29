@@ -93,7 +93,7 @@ default_filelist=( ~/.config/aurorae
 
 case "$mode" in
     backup)
-        rsync --recursive --no-links --times --relative --ignore-missing-args "${default_filelist[@]}" "$prefix"/
+        rsync --recursive --no-links --times --relative --ignore-missing-args --exclude '*.png' --exclude '*.pem' "${default_filelist[@]}" "$prefix"/
         ;;
     restore)
         rsync --recursive --no-links --times --ignore-missing-args "$prefix"/ "$HOME"
