@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+
+set -o nounset
+set -o errexit
+
+function usage() {
+    echo "Usage: kdeconfbackup [options] <backup/restore> <dir>"
+}
+
+function banner() {
+    echo "backs up KDE configuration to a folder"
+}
+
+function help_text(){
+    cat << EOF
+$(banner)
+$(usage)
+
+Defaults shown in [].
+-h, --help           this help
+EOF
+}
+
+die(){
+    printf "$@"
+    exit 1
+}
+
+ARGS="$(getopt --options h --long help -- "$@")"
+eval set -- "$ARGS"
+while [[ $# != 0 ]]
+do
+    case "$1" in
+    -h | --help)
+        help_text
+        exit 1
+        ;;
+    --)
+        mode="$2"
+        prefix="$3"
+        shift 3
+        ;;
+    esac
+done
+
+default_filelist=( ~/.config/aurorae
+~/./.config/autostart
+~/./.config/autostart-scripts
+~/./.config/breezerc
+~/./.config/dolphinrc
+~/./.config/katemetainfos
+~/./.config/katerc
+~/./.config/kateschemarc
+~/./.config/katevirc
+~/./.config/KDE
+~/./.config/kdeconnect
+~/./.config/kdeglobals
+~/./.config/kde.org
+~/./.config/kglobalshortcutsrc
+~/./.config/khotkeysrc
+~/./.config/klipperrc
+~/./.config/konsolerc
+~/./.config/krunnerrc
+~/./.config/kscreenlockerrc
+~/./.config/ksplashrc
+~/./.config/kvantum
+~/./.config/kwinrc
+~/./.config/kwinrulesrc
+~/./.config/latte
+~/./.config/lattedockrc
+~/./.config/oxygenrc
+~/./.config/plasma_calendar_holiday_regions
+~/./.config/plasma-org.kde.plasma.desktop-appletsrc
+~/./.config/plasmarc
+~/./.config/plasmashellrc
+~/./.config/plasma-workspace
+~/./.config/powermanagementprofilesrc
+~/./.config/qtcurve
+~/./.config/Trolltech.conf
+~/./.kde
+~/./.kde4
+~/./.local/share/aurorae
+~/./.local/share/kate
+~/./.local/share/konsole
+~/./.local/share/kservices5
+~/./.local/share/kxmlgui5
+~/./.local/share/plasma
+~/./.local/share/plasma_icons )
+
+case "$mode" in
+    backup)
+        rsync --recursive --no-links --times --relative --ignore-missing-args "${default_filelist[@]}" "$prefix"/
+        ;;
+    restore)
+        rsync --recursive --no-links --times --ignore-missing-args "$prefix"/ "$HOME"
+        ;;
+        *)
+        die "invalid mode. valid modes:\nbackup restore\n"
+esac
+
