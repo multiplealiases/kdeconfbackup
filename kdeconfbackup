@@ -40,6 +40,18 @@ do
         exit 1
         ;;
     --)
+        set +o nounset
+        if [[ -z $2 ]]
+        then
+            help_text
+            exit 1
+        elif [[ -z $3 ]] && [[ $2 == "backup" || $2 == "restore" ]]
+        then
+            die 'need a directory to %s to\n' "$2"
+        else
+            die "invalid mode. valid modes:\nbackup restore\n"
+        fi
+        set -o nounset
         mode="$2"
         prefix="$3"
         shift 3
